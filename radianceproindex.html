@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✨ Find Your Perfect Color</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1A1A2E;--darkblue:#16213E;--coral:#E94560;--royal:#0F3460;
+  --cream:#F8F5F2;--text:#2D2D2D;--white:#FFFFFF;--green:#2ECC71;--gold:#F39C12;
+  --r:16px;--r-sm:10px;--r-lg:24px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--cream)}
+::-webkit-scrollbar-thumb{background:var(--coral);border-radius:3px}
+
+/* ── PARTICLES ── */
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
+.particle{position:absolute;border-radius:50%;opacity:.12;animation:float linear infinite}
+@keyframes float{0%{transform:translateY(100vh) rotate(0)}100%{transform:translateY(-120px) rotate(360deg)}}
+
+/* ── PAGE SYSTEM ── */
+.page{position:fixed;top:0;left:0;width:100%;height:100%;overflow-y:auto;transition:transform .6s cubic-bezier(.77,0,.175,1),opacity .6s ease;z-index:10}
+.page.hidden{transform:translateX(100%);opacity:0;pointer-events:none}
+.page.slide-out{transform:translateX(-100%);opacity:0;pointer-events:none}
+
+/* ── PAGE 1 ── */
+#page1{background:linear-gradient(135deg,var(--navy) 0%,var(--darkblue) 50%,var(--royal) 100%)}
+.p1-inner{max-width:760px;margin:0 auto;padding:48px 24px 80px}
+
+.logo-bar{display:flex;align-items:center;gap:12px;margin-bottom:48px}
+.logo-gem{width:40px;height:40px;background:var(--coral);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.logo-text{font-family:'Playfair Display',serif;color:#fff;font-size:18px;letter-spacing:.04em}
+
+.hero-eyebrow{font-size:12px;font-weight:600;letter-spacing:.2em;color:var(--coral);text-transform:uppercase;margin-bottom:16px}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(36px,7vw,64px);line-height:1.1;color:#fff;margin-bottom:16px}
+.hero-title span{color:var(--coral)}
+.hero-sub{font-size:16px;color:rgba(255,255,255,.6);line-height:1.7;max-width:520px;margin-bottom:48px}
+
+.section-label{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:16px}
+.section-block{margin-bottom:36px}
+
+/* SKIN TONE GRID */
+.tone-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.tone-btn{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:var(--r);padding:16px 12px;text-align:center;cursor:pointer;transition:all .25s;color:#fff}
+.tone-btn:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25);transform:translateY(-2px)}
+.tone-btn.selected{background:rgba(233,69,96,.18);border-color:var(--coral);box-shadow:0 0 0 3px rgba(233,69,96,.2)}
+.tone-emoji{font-size:28px;display:block;margin-bottom:8px}
+.tone-name{font-size:13px;font-weight:600;display:block}
+.tone-desc{font-size:11px;color:rgba(255,255,255,.45);display:block;margin-top:3px}
+
+/* COLOR SWATCHES */
+.swatch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:10px}
+.swatch-btn{border:2.5px solid transparent;border-radius:var(--r-sm);padding:4px;cursor:pointer;transition:all .22s;background:transparent}
+.swatch-btn:hover{transform:scale(1.08)}
+.swatch-btn.selected{border-color:#fff;box-shadow:0 0 0 3px var(--coral)}
+.swatch-inner{border-radius:6px;height:52px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;position:relative}
+.swatch-label{font-size:10px;font-weight:700;letter-spacing:.04em;text-shadow:0 1px 4px rgba(0,0,0,.6);color:#fff}
+
+/* OCCASION */
+.occasion-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:500px){.occasion-grid{grid-template-columns:repeat(4,1fr)}}
+.occ-btn{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:var(--r-sm);padding:14px 10px;text-align:center;cursor:pointer;transition:all .22s;color:#fff}
+.occ-btn:hover{background:rgba(255,255,255,.12);transform:translateY(-1px)}
+.occ-btn.selected{background:rgba(233,69,96,.18);border-color:var(--coral)}
+.occ-emoji{font-size:22px;display:block;margin-bottom:6px}
+.occ-name{font-size:12px;font-weight:600;display:block}
+.occ-desc{font-size:10px;color:rgba(255,255,255,.45);display:block;margin-top:2px}
+
+/* CTA BUTTON */
+.cta-wrap{margin-top:40px;text-align:center}
+.cta-btn{display:inline-flex;align-items:center;gap:12px;background:var(--coral);color:#fff;border:none;border-radius:50px;padding:18px 48px;font-family:'Inter',sans-serif;font-size:16px;font-weight:600;cursor:pointer;letter-spacing:.02em;transition:all .3s;position:relative;overflow:hidden}
+.cta-btn::before{content:'';position:absolute;inset:-2px;border-radius:52px;background:var(--coral);z-index:-1;animation:pulse-ring 2s ease infinite}
+@keyframes pulse-ring{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.06);opacity:.7}}
+.cta-btn:hover{background:#d63351;transform:translateY(-2px);box-shadow:0 16px 48px rgba(233,69,96,.4)}
+.cta-btn:active{transform:translateY(0)}
+.cta-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;animation:none}
+
+/* Loading spinner */
+.spinner{width:20px;height:20px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── PAGE 2 ── */
+#page2{background:var(--cream)}
+.p2-inner{max-width:720px;margin:0 auto;padding:40px 20px 80px}
+
+/* Hero card */
+.result-hero{background:linear-gradient(135deg,var(--navy),var(--royal));border-radius:var(--r-lg);padding:40px 32px;text-align:center;margin-bottom:24px;position:relative;overflow:hidden}
+.result-hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-emoji-big{font-size:64px;display:block;margin-bottom:16px;animation:pop .5s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes pop{from{transform:scale(0) rotate(-20deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.hero-verdict{font-family:'Playfair Display',serif;font-size:clamp(22px,5vw,36px);color:#fff;font-weight:900;text-transform:uppercase;letter-spacing:.02em;margin-bottom:12px}
+.hero-verdict span{color:var(--coral)}
+
+/* Score ring */
+.score-wrap{display:flex;justify-content:center;margin:20px 0}
+.score-ring{position:relative;width:100px;height:100px}
+.score-ring svg{transform:rotate(-90deg)}
+.score-ring circle{fill:none;stroke:rgba(255,255,255,.15);stroke-width:8}
+.score-ring circle.fill{stroke:var(--coral);stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.22,1,.36,1)}
+.score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.score-pct{font-size:26px;font-weight:800;color:#fff}
+.score-lbl{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase}
+
+/* Result cards */
+.result-grid{display:grid;gap:16px;margin-bottom:24px}
+.rcard{background:#fff;border-radius:var(--r);padding:24px;box-shadow:0 2px 16px rgba(0,0,0,.06),0 0 0 1px rgba(0,0,0,.04)}
+.rcard-title{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--coral);margin-bottom:12px}
+.rcard-body{font-size:15px;line-height:1.7;color:var(--text)}
+.rcard-body strong{color:var(--navy);font-weight:600}
+
+/* Alternatives */
+.alt-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #f0ede9}
+.alt-row:last-child{border-bottom:none}
+.alt-swatch{width:44px;height:44px;border-radius:10px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.alt-info{flex:1}
+.alt-name{font-size:14px;font-weight:600;color:var(--navy)}
+.alt-bar-wrap{margin-top:4px;height:4px;background:#f0ede9;border-radius:2px;overflow:hidden}
+.alt-bar{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--coral),var(--gold));transition:width 1s cubic-bezier(.22,1,.36,1)}
+.alt-pct{font-size:13px;font-weight:700;color:var(--text);min-width:40px;text-align:right}
+
+/* Tips */
+.tip-row{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid #f0ede9}
+.tip-row:last-child{border-bottom:none}
+.tip-icon{font-size:20px;flex-shrink:0;width:32px;text-align:center}
+.tip-content .tip-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--coral);margin-bottom:2px}
+.tip-content p{font-size:14px;color:var(--text);line-height:1.6}
+
+/* Outfit */
+.outfit-card{background:linear-gradient(135deg,rgba(233,69,96,.08),rgba(15,52,96,.08));border:1.5px solid rgba(233,69,96,.2);border-radius:var(--r);padding:20px 24px;margin-bottom:24px}
+.outfit-label{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--coral);margin-bottom:8px}
+.outfit-text{font-family:'Playfair Display',serif;font-size:15px;font-style:italic;color:var(--navy);line-height:1.7}
+
+/* Action buttons */
+.action-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.act-btn{border:none;border-radius:50px;padding:14px 20px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:8px}
+.act-btn.primary{background:var(--coral);color:#fff}
+.act-btn.primary:hover{background:#d63351;transform:translateY(-1px);box-shadow:0 8px 24px rgba(233,69,96,.3)}
+.act-btn.secondary{background:#fff;color:var(--navy);border:1.5px solid #e0dbd6}
+.act-btn.secondary:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+.act-btn.ghost{background:transparent;color:var(--navy);border:1.5px solid #e0dbd6;grid-column:1/-1}
+.act-btn.ghost:hover{background:var(--navy);color:#fff}
+
+/* Back nav */
+.back-bar{display:flex;align-items:center;gap:10px;margin-bottom:32px;cursor:pointer;color:var(--navy);transition:opacity .2s}
+.back-bar:hover{opacity:.6}
+.back-icon{width:36px;height:36px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+
+/* History panel */
+.history-bar{background:#fff;border-radius:var(--r);padding:16px 20px;margin-top:16px;box-shadow:0 2px 16px rgba(0,0,0,.06)}
+.history-title{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(45,45,45,.4);margin-bottom:12px}
+.hist-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f5f2ef;cursor:pointer;transition:opacity .2s}
+.hist-item:last-child{border-bottom:none}
+.hist-item:hover{opacity:.7}
+.hist-dot{width:28px;height:28px;border-radius:8px;flex-shrink:0}
+.hist-label{flex:1;font-size:13px;color:var(--text)}
+.hist-score{font-size:12px;font-weight:700;color:var(--coral)}
+
+/* Confetti */
+.confetti-piece{position:fixed;top:-20px;pointer-events:none;z-index:9999;animation:confetti-fall linear forwards}
+@keyframes confetti-fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+/* Share modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.show{opacity:1;pointer-events:all}
+.modal-box{background:#fff;border-radius:var(--r-lg);padding:32px;max-width:380px;width:90%;transform:scale(.9);transition:transform .3s}
+.modal-overlay.show .modal-box{transform:scale(1)}
+.modal-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);margin-bottom:8px}
+.modal-sub{font-size:14px;color:rgba(45,45,45,.6);margin-bottom:24px;line-height:1.5}
+.share-text-box{background:#f8f5f2;border-radius:var(--r-sm);padding:14px;font-size:13px;color:var(--text);line-height:1.6;border:1px solid #e8e3de;margin-bottom:16px}
+.modal-btn{width:100%;border:none;border-radius:50px;padding:14px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;background:var(--coral);color:#fff;margin-bottom:8px;transition:all .25s}
+.modal-btn:hover{background:#d63351}
+.modal-close{width:100%;border:1.5px solid #e0dbd6;background:transparent;border-radius:50px;padding:12px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;color:var(--navy)}
+</style>
+</head>
+<body>
+
+<div id="particles"></div>
+
+<!-- ══════════════════════ PAGE 1 ══════════════════════ -->
+<div class="page" id="page1">
+<div class="p1-inner">
+  <div class="logo-bar">
+    <div class="logo-gem">✨</div>
+    <span class="logo-text">ChromaStyle</span>
+  </div>
+
+  <div class="hero-eyebrow">Personal Color Analysis</div>
+  <h1 class="hero-title">Find Your <span>Perfect</span><br>Color Match</h1>
+  <p class="hero-sub">Tell us about your skin tone and the color you're considering — we'll do the rest.</p>
+
+  <!-- SKIN TONE -->
+  <div class="section-block">
+    <div class="section-label">1 · Your Skin Tone</div>
+    <div class="tone-grid">
+      <button class="tone-btn" data-tone="fair" onclick="selectTone(this)">
+        <span class="tone-emoji">☀️</span>
+        <span class="tone-name">Fair</span>
+        <span class="tone-desc">Porcelain, burns easily</span>
+      </button>
+      <button class="tone-btn" data-tone="light" onclick="selectTone(this)">
+        <span class="tone-emoji">🌤️</span>
+        <span class="tone-name">Light</span>
+        <span class="tone-desc">Beige, tans slowly</span>
+      </button>
+      <button class="tone-btn" data-tone="medium" onclick="selectTone(this)">
+        <span class="tone-emoji">🌥️</span>
+        <span class="tone-name">Medium</span>
+        <span class="tone-desc">Olive, tans easily</span>
+      </button>
+      <button class="tone-btn" data-tone="dark" onclick="selectTone(this)">
+        <span class="tone-emoji">🌙</span>
+        <span class="tone-name">Dark</span>
+        <span class="tone-desc">Rich brown, never burns</span>
+      </button>
+      <button class="tone-btn" data-tone="deep" onclick="selectTone(this)">
+        <span class="tone-emoji">🌑</span>
+        <span class="tone-name">Deep</span>
+        <span class="tone-desc">Ebony, radiant glow</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- COLORS -->
+  <div class="section-block">
+    <div class="section-label">2 · Clothing Color</div>
+    <div class="swatch-grid" id="swatchGrid"></div>
+  </div>
+
+  <!-- OCCASION -->
+  <div class="section-block">
+    <div class="section-label">3 · Occasion <span style="font-weight:300;text-transform:none;letter-spacing:0;color:rgba(255,255,255,.25)">(optional)</span></div>
+    <div class="occasion-grid">
+      <button class="occ-btn" data-occ="formal" onclick="selectOcc(this)">
+        <span class="occ-emoji">👔</span>
+        <span class="occ-name">Formal</span>
+        <span class="occ-desc">Office, Interview</span>
+      </button>
+      <button class="occ-btn" data-occ="casual" onclick="selectOcc(this)">
+        <span class="occ-emoji">🎉</span>
+        <span class="occ-name">Casual</span>
+        <span class="occ-desc">Weekend, Friends</span>
+      </button>
+      <button class="occ-btn" data-occ="evening" onclick="selectOcc(this)">
+        <span class="occ-emoji">🌙</span>
+        <span class="occ-name">Evening</span>
+        <span class="occ-desc">Party, Date</span>
+      </button>
+      <button class="occ-btn" data-occ="day" onclick="selectOcc(this)">
+        <span class="occ-emoji">☀️</span>
+        <span class="occ-name">Day Out</span>
+        <span class="occ-desc">Shopping, Brunch</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="cta-wrap">
+    <button class="cta-btn" id="ctaBtn" onclick="getRecommendation()" disabled>
+      <div class="spinner" id="spinner"></div>
+      <span id="ctaLabel">🔮 Get My Style Recommendation</span>
+    </button>
+    <p style="margin-top:14px;font-size:12px;color:rgba(255,255,255,.3)">Select skin tone + color to continue</p>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════ PAGE 2 ══════════════════════ -->
+<div class="page hidden" id="page2">
+<div class="p2-inner">
+  <div class="back-bar" onclick="goBack()">
+    <div class="back-icon">←</div>
+    <span style="font-size:14px;font-weight:500">Back to Profile</span>
+  </div>
+
+  <!-- HERO -->
+  <div class="result-hero" id="resultHero">
+    <span class="hero-emoji-big" id="resultEmoji">✅</span>
+    <div class="hero-verdict" id="resultVerdict">YOUR COLOR RESULT</div>
+    <div class="score-wrap">
+      <div class="score-ring">
+        <svg viewBox="0 0 100 100" width="100" height="100">
+          <circle cx="50" cy="50" r="42" stroke-width="8"/>
+          <circle cx="50" cy="50" r="42" stroke-width="8" class="fill" id="scoreCircle"
+            stroke-dasharray="264" stroke-dashoffset="264"/>
+        </svg>
+        <div class="score-num">
+          <span class="score-pct" id="scorePct">0%</span>
+          <span class="score-lbl">match</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANALYSIS CARDS -->
+  <div class="result-grid">
+    <div class="rcard">
+      <div class="rcard-title">Why this works</div>
+      <div class="rcard-body" id="whyWorks">—</div>
+    </div>
+    <div class="rcard">
+      <div class="rcard-title">Your skin tone profile</div>
+      <div class="rcard-body" id="skinProfile">—</div>
+    </div>
+    <div class="rcard">
+      <div class="rcard-title">Color psychology</div>
+      <div class="rcard-body" id="colorPsych">—</div>
+    </div>
+  </div>
+
+  <!-- ALTERNATIVES -->
+  <div class="rcard" style="margin-bottom:24px">
+    <div class="rcard-title">Even better options</div>
+    <div id="altList"></div>
+  </div>
+
+  <!-- STYLE TIPS -->
+  <div class="rcard" style="margin-bottom:16px">
+    <div class="rcard-title">Style tips</div>
+    <div id="tipsList"></div>
+  </div>
+
+  <!-- OUTFIT -->
+  <div class="outfit-card">
+    <div class="outfit-label">Try this look</div>
+    <div class="outfit-text" id="outfitText">—</div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="action-row">
+    <button class="act-btn primary" onclick="goBack()">🔄 Try Another</button>
+    <button class="act-btn secondary" onclick="openShare()">📤 Share Results</button>
+  </div>
+  <button class="act-btn ghost" onclick="saveProfile()">💾 Save My Style Profile</button>
+
+  <!-- HISTORY -->
+  <div class="history-bar" id="historyBar" style="display:none">
+    <div class="history-title">Recent Looks</div>
+    <div id="historyList"></div>
+  </div>
+</div>
+</div>
+
+<!-- SHARE MODAL -->
+<div class="modal-overlay" id="shareModal">
+  <div class="modal-box">
+    <div class="modal-title">Share Your Style</div>
+    <div class="modal-sub">Copy the text below to share your color match results.</div>
+    <div class="share-text-box" id="shareText"></div>
+    <button class="modal-btn" onclick="copyShare()">📋 Copy to Clipboard</button>
+    <button class="modal-close" onclick="closeShare()">Maybe Later</button>
+  </div>
+</div>
+
+<script>
+// ──────── DATA ────────
+const COLORS=[
+  {id:'black',label:'Black',hex:'#1A1A1A'},
+  {id:'white',label:'White',hex:'#FFFFFF',dark:true},
+  {id:'red',label:'Red',hex:'#E74C3C'},
+  {id:'blue',label:'Blue',hex:'#3498DB'},
+  {id:'yellow',label:'Yellow',hex:'#F1C40F',dark:true},
+  {id:'green',label:'Green',hex:'#2ECC71',dark:true},
+  {id:'purple',label:'Purple',hex:'#9B59B6'},
+  {id:'orange',label:'Orange',hex:'#E67E22'},
+  {id:'pink',label:'Pink',hex:'#FF6B81'},
+  {id:'brown',label:'Brown',hex:'#8D6E63'},
+  {id:'gray',label:'Gray',hex:'#95A5A6'},
+  {id:'navy',label:'Navy',hex:'#2C3E50'},
+];
+
+const LOGIC={
+  fair:{
+    black:{emoji:'⚠️',score:45,verdict:'BLACK MAY FEEL HARSH',why:'Black can create very stark contrast on fair skin, making the look feel severe rather than sophisticated.',profile:'Your fair, porcelain complexion is light-reactive — it responds best to softer contrasts and cooler, muted tones.',psych:'Power and drama — but at this contrast level it can feel theatrical rather than intentional.',alts:[{name:'Navy',hex:'#2C3E50',pct:85},{name:'Charcoal',hex:'#4A4A4A',pct:80},{name:'Burgundy',hex:'#800020',pct:78}],tips:[{i:'💡',l:'Pro Tip',t:'Layer black with a warm scarf or neckpiece to soften the contrast near your face.'},{i:'🎨',l:'Pair with',t:'Blush, ivory, soft rose, or dusky lilac — pastels that complement your cool undertones.'},{i:'📅',l:'Best for',t:'Evening events where dramatic lighting softens strong contrasts.'}],outfit:'A charcoal blazer over a blush silk blouse, with tailored ivory trousers — power dressing without the harshness.'},
+    white:{emoji:'✅',score:90,verdict:'WHITE IS STUNNING ON YOU',why:'White creates a beautiful, ethereal contrast with your fair complexion — clean and luminous without being harsh.',profile:'Your fair skin has cool undertones that sing alongside crisp whites and soft creams, giving you a porcelain-doll radiance.',psych:'Purity, clarity, and freshness — white signals effortless confidence and understated elegance.',alts:[{name:'Cream',hex:'#FFFDD0',pct:88},{name:'Blush',hex:'#F4A7B9',pct:85},{name:'Powder Blue',hex:'#B0C4DE',pct:82}],tips:[{i:'💡',l:'Pro Tip',t:'Opt for optical white in linen or cotton for daytime, silk white for evening glamour.'},{i:'🎨',l:'Pair with',t:'Rose gold accessories, nude heels, or a denim layer — all amplify the freshness.'},{i:'📅',l:'Best for',t:'Brunch, garden parties, and any sun-drenched day occasion.'}],outfit:'A crisp white linen co-ord with nude sandals and a woven straw bag — effortlessly chic from morning to afternoon.'},
+    red:{emoji:'✅',score:92,verdict:'RED ADDS STUNNING WARMTH',why:'Red adds warmth and vitality to your fair skin tone, creating a classic, high-impact contrast that\'s never out of style.',profile:'Fair skin benefits enormously from warm accent colors — red injects life and energy into a complexion that can sometimes look flat in dull palettes.',psych:'Passion, confidence, and magnetic energy — red is the color of intention and power.',alts:[{name:'Coral',hex:'#FF6B6B',pct:90},{name:'Rose',hex:'#FF007F',pct:88},{name:'Cranberry',hex:'#9B111E',pct:84}],tips:[{i:'💡',l:'Pro Tip',t:'Blue-based reds (like cherry and cranberry) flatter fair skin more than orange-reds.'},{i:'🎨',l:'Pair with',t:'Classic black, crisp white, or gold accessories for maximum impact.'},{i:'📅',l:'Best for',t:'Evening outings, date nights, and occasions where you want to be noticed.'}],outfit:'A cherry-red midi dress with black strappy heels and a delicate gold chain — timeless, refined, unforgettable.'},
+    yellow:{emoji:'❌',score:28,verdict:'YELLOW CAN WASH YOU OUT',why:'Bright yellow reflects warmth that clashes with the cool undertones in fair skin, creating a sallow, washed-out effect.',profile:'Your cool-toned fair complexion needs colors that complement — not compete with — your natural coolness. Warm yellows pull you toward looking unwell.',psych:'Optimism and energy — but when it fights your skin tone, the message gets lost in the visual noise.',alts:[{name:'Champagne',hex:'#F7E7CE',pct:76},{name:'Soft Lavender',hex:'#E6E6FA',pct:80},{name:'Icy Pink',hex:'#FFB6C1',pct:78}],tips:[{i:'💡',l:'Pro Tip',t:'If you love yellow, try it as an accent — a belt, bag, or shoes — not a full look.'},{i:'🎨',l:'Pair with',t:'Crisp white or deep navy to ground the yellow away from your face.'},{i:'📅',l:'Best for',t:'Accessories only; avoid yellow near the face entirely.'}],outfit:'A white linen shirt tucked into wide-leg trousers, with a soft yellow clutch as the only yellow element — grounded and chic.'},
+    blue:{emoji:'✅',score:88,verdict:'BLUE IS A NATURAL FIT',why:'Blue harmonizes beautifully with the cool undertones of fair skin, especially medium and deeper shades of blue.',profile:'Cool-toned fair complexions find a kindred spirit in blue — the hues amplify each other\'s clarity without competing.',psych:'Calm, intelligence, and trustworthiness — blue signals composure with depth.',alts:[{name:'Navy',hex:'#1F305E',pct:92},{name:'Cobalt',hex:'#0047AB',pct:85},{name:'Powder Blue',hex:'#B0C4DE',pct:80}],tips:[{i:'💡',l:'Pro Tip',t:'Avoid turquoise or teal — the green warmth can muddy fair cool tones. Stick to pure blues.'},{i:'🎨',l:'Pair with',t:'White, silver, and blush for a cool, cohesive palette.'},{i:'📅',l:'Best for',t:'Office, smart-casual, and formal occasions.'}],outfit:'A tailored cobalt blazer over a crisp white tee, with slim charcoal trousers — sharp, intentional, boardroom-ready.'},
+    green:{emoji:'⚠️',score:55,verdict:'GREEN NEEDS CAREFUL PICKING',why:'Cool greens like emerald or jade work on fair skin; warm or yellow-leaning greens can pull the skin sallow.',profile:'Fair skin has limited warm tolerance — greens with strong yellow undertones compete unflatteringly with your cool base.',psych:'Growth, balance, and nature — the effect lands beautifully when the shade is right.',alts:[{name:'Sage',hex:'#87AE73',pct:78},{name:'Mint',hex:'#98FF98',pct:74},{name:'Deep Emerald',hex:'#046307',pct:82}],tips:[{i:'💡',l:'Pro Tip',t:'Hunter green and deep emerald are your allies. Avoid lime, chartreuse, and olive.'},{i:'🎨',l:'Pair with',t:'Cream, blush, or gold — warm neutrals that bridge the contrast gently.'},{i:'📅',l:'Best for',t:'Evening wear and cooler-season looks.'}],outfit:'An emerald wrap dress with nude pointed-toe flats and gold stud earrings — richly elegant and seasonless.'},
+    purple:{emoji:'✅',score:86,verdict:'PURPLE LOOKS ROMANTIC',why:'Purple shares the cool blue-red blend that harmonizes naturally with fair, cool-toned skin.',profile:'Your fair complexion finds purple flattering because both share the cool spectrum — there\'s no clash, only complement.',psych:'Creativity, mystery, and royalty — purple communicates artistic confidence.',alts:[{name:'Lilac',hex:'#C8A2C8',pct:83},{name:'Mauve',hex:'#E0B0FF',pct:80},{name:'Plum',hex:'#DDA0DD',pct:77}],tips:[{i:'💡',l:'Pro Tip',t:'Soft lavenders and mid-purples are most flattering; deep plums are dramatic for evening.'},{i:'🎨',l:'Pair with',t:'Ivory, silver, or soft grey for a refined, editorial feel.'},{i:'📅',l:'Best for',t:'Casual outings, creative events, and romantic occasions.'}],outfit:'A lavender linen midi skirt with a silky ivory blouse and silver sandals — dreamy, effortless, and quietly stunning.'},
+    orange:{emoji:'⚠️',score:42,verdict:'ORANGE CAN OVERPOWER',why:'Orange\'s strong warm undertones can clash with fair skin\'s cool base, creating an unbalanced, overpowering look.',profile:'Your fair complexion has limited warm-color tolerance near the face — orange\'s intensity can highlight rather than complement.',psych:'Energy and boldness — but when it fights cool undertones, the result feels uncoordinated.',alts:[{name:'Peachy Pink',hex:'#FFDAB9',pct:78},{name:'Terracotta',hex:'#E2725B',pct:72},{name:'Apricot',hex:'#FBCEB1',pct:75}],tips:[{i:'💡',l:'Pro Tip',t:'Keep orange far from your face — lower body or accessories only.'},{i:'🎨',l:'Pair with',t:'Deep navy or ivory to anchor the warmth.'},{i:'📅',l:'Best for',t:'Summer casual looks, as a statement accessory.'}],outfit:'White wide-leg trousers with a terracotta crossbody bag and strappy sandals — warm accent, cool base.'},
+    pink:{emoji:'✅',score:91,verdict:'PINK IS MADE FOR YOU',why:'Pink echoes the natural flush in fair skin, creating a harmonious, skin-like warmth that feels effortless and romantic.',profile:'Fair skin and pink share a natural kinship — the color amplifies your complexion\'s innate softness.',psych:'Femininity, tenderness, and warmth — pink creates approachable, soft confidence.',alts:[{name:'Blush',hex:'#FFB6C1',pct:88},{name:'Rose',hex:'#FF66CC',pct:84},{name:'Dusty Pink',hex:'#DCAE96',pct:86}],tips:[{i:'💡',l:'Pro Tip',t:'Muted dusty pinks and cool-toned roses are most sophisticated. Avoid very bright fuchsia.'},{i:'🎨',l:'Pair with',t:'White, grey, or nude for a tonal, pulled-together palette.'},{i:'📅',l:'Best for',t:'Brunches, dates, and relaxed social occasions.'}],outfit:'A dusty rose midi dress with nude pointed mules and pearl drop earrings — soft, intentional, quietly luminous.'},
+    brown:{emoji:'⚠️',score:52,verdict:'BROWN CAN BLEND IN',why:'Brown tones that are too close to fair skin\'s warmth can blur the distinction between face and outfit, creating a washed-out effect.',profile:'Fair skin needs contrast or clear tonal separation — mid-toned browns especially risk blending into your complexion.',psych:'Earthiness and dependability — lovely in concept, but needs careful contrast management on fair skin.',alts:[{name:'Rich Chocolate',hex:'#3D1C02',pct:79},{name:'Camel',hex:'#C19A6B',pct:73},{name:'Tan',hex:'#D2B48C',pct:68}],tips:[{i:'💡',l:'Pro Tip',t:'Go dark (deep chocolate, espresso) for drama, or very light (camel) for tonal ease. Avoid mid-browns.'},{i:'🎨',l:'Pair with',t:'Cream, ivory, or soft white to keep the look from feeling muddy.'},{i:'📅',l:'Best for',t:'Autumn/winter looks with layering.'}],outfit:'A deep espresso turtleneck layered under a camel coat, with ivory straight trousers — rich, autumnal, and polished.'},
+    gray:{emoji:'✅',score:82,verdict:'GRAY IS QUIETLY PERFECT',why:'Cool greys are close to fair skin\'s undertone palette and create a refined, understated elegance without competing.',profile:'Fair complexions with cool undertones find grey almost as natural as their own skin — it\'s the ultimate neutral ally.',psych:'Sophistication, restraint, and authority — grey signals quiet power.',alts:[{name:'Silver',hex:'#C0C0C0',pct:80},{name:'Slate',hex:'#708090',pct:78},{name:'Dove',hex:'#D3D3D3',pct:76}],tips:[{i:'💡',l:'Pro Tip',t:'Cool greys (blue-toned) flatter fair skin more than warm greys (beige-toned).'},{i:'🎨',l:'Pair with',t:'White, blush, or navy for defined, editorial contrast.'},{i:'📅',l:'Best for',t:'Office, smart-casual, and any polished everyday look.'}],outfit:'Slate grey wide-leg trousers with a white silk blouse and silver delicate jewellery — minimal, deliberate, and sharp.'},
+    navy:{emoji:'✅',score:94,verdict:'NAVY IS YOUR BEST NEUTRAL',why:'Navy is softer than black but equally sophisticated, making it the ideal contrast color for fair, cool-toned skin.',profile:'Your fair, cool complexion finds navy exceptionally flattering — it\'s dramatic without being harsh.',psych:'Trust, depth, and quiet authority — navy is confidence without the shout.',alts:[{name:'Royal Blue',hex:'#4169E1',pct:88},{name:'Cobalt',hex:'#0047AB',pct:84},{name:'Midnight',hex:'#191970',pct:91}],tips:[{i:'💡',l:'Pro Tip',t:'Navy is your black — use it everywhere black would go and enjoy the softer result.'},{i:'🎨',l:'Pair with',t:'White, ivory, silver, and blush for a crisp, cool palette.'},{i:'📅',l:'Best for',t:'Formal, office, and evening occasions — it genuinely works everywhere.'}],outfit:'A navy tailored suit with a white silk blouse and pearl earrings — classic, current, and unmistakably elegant.'},
+  },
+  light:{
+    black:{emoji:'⚠️',score:55,verdict:'BLACK CAN WASH YOU OUT',why:'Black can drain the warmth from light skin, creating a flat look. Navy and charcoal are safer, more flattering choices.',profile:'Your light, beige-toned complexion has gentle warm undertones that need nurturing — stark contrasts can overwhelm them.',psych:'Drama and authority — but the effect gets muddied when contrast is too sharp for your tone.',alts:[{name:'Navy',hex:'#1F305E',pct:88},{name:'Charcoal',hex:'#4A4A4A',pct:82},{name:'Teal',hex:'#008080',pct:80}],tips:[{i:'💡',l:'Pro Tip',t:'If you wear black, add a warm scarf, blush blouse, or gold accessories to bridge the gap.'},{i:'🎨',l:'Pair with',t:'Warm ivory, camel, or soft terracotta for a grounded, editorial contrast.'},{i:'📅',l:'Best for',t:'Evening events where mood lighting softens the contrast.'}],outfit:'A black wide-leg trouser with an ivory fitted blouse and camel mules — the warmth of ivory bridges the stark contrast beautifully.'},
+    white:{emoji:'✅',score:87,verdict:'WHITE LOOKS CLEAN & FRESH',why:'White creates fresh, clean contrast against light skin — luminous without the coldness it can carry on very fair tones.',profile:'Your light, beige complexion bridges cool and warm, making white highly versatile and effortlessly flattering.',psych:'Clarity, openness, and lightness — white signals simplicity done with intention.',alts:[{name:'Ivory',hex:'#FFFFF0',pct:84},{name:'Cream',hex:'#FFFDD0',pct:82},{name:'Champagne',hex:'#F7E7CE',pct:79}],tips:[{i:'💡',l:'Pro Tip',t:'Warm whites (ivory, linen white) flatter light skin more than stark optical whites.'},{i:'🎨',l:'Pair with',t:'Warm toffee accessories or a subtle warm blush for a tonal, polish look.'},{i:'📅',l:'Best for',t:'Day outings, brunches, and resort-style occasions.'}],outfit:'Ivory linen wide-leg trousers with a white cotton button-down, woven sandals, and a tan tote — relaxed, considered, sunny.'},
+    red:{emoji:'✅',score:88,verdict:'RED BRINGS YOU TO LIFE',why:'Red creates energized, vibrant contrast with light skin, adding a vivid warmth that feels intentional and powerful.',profile:'Your light complexion benefits from colour-forward choices — red is dramatic but not overpowering at this skin depth.',psych:'Confidence, passion, and magnetic pull — red announces your presence before you speak.',alts:[{name:'Cherry',hex:'#DE3163',pct:84},{name:'Poppy',hex:'#FF4500',pct:80},{name:'Cranberry',hex:'#9B111E',pct:86}],tips:[{i:'💡',l:'Pro Tip',t:'Blue-reds (cherry, cranberry) are more flattering than orange-reds on lighter tones.'},{i:'🎨',l:'Pair with',t:'Black, white, or nude — reds need clean, simple partners.'},{i:'📅',l:'Best for',t:'Date nights, evening events, and occasions where presence matters.'}],outfit:'A cranberry silk midi dress with black strappy heels and minimal gold jewellery — the red does everything.'},
+    blue:{emoji:'✅',score:95,verdict:'BLUE IS PERFECTLY ALIGNED',why:'Blue complements your light skin beautifully — especially cooler, more saturated tones that align with your natural undertones.',profile:'Light skin with beige-cool undertones finds blue genuinely transformative — the harmony feels natural and effortless.',psych:'Calm, intellect, and composed confidence — blue elevates without overwhelming.',alts:[{name:'Navy',hex:'#1F305E',pct:92},{name:'Cobalt',hex:'#0047AB',pct:89},{name:'Teal',hex:'#008080',pct:86}],tips:[{i:'💡',l:'Pro Tip',t:'Saturated medium blues are your sweet spot. They contrast just enough without going stark.'},{i:'🎨',l:'Pair with',t:'White, silver, or warm sand for a fresh, coastal palette.'},{i:'📅',l:'Best for',t:'Work, smart-casual, and elevated everyday wear.'}],outfit:'A cobalt silk blouse tucked into slim white trousers, with silver sandals — sharp, breezy, and polished.'},
+    yellow:{emoji:'❌',score:30,verdict:'YELLOW PULLS SALLOW',why:'Yellow can make light skin look sallow or jaundiced — the warmth conflicts with light skin\'s delicate cool-warm balance.',profile:'Your light skin needs colors that complement its undertone balance; strong yellow disrupts this, emphasizing any yellow in your complexion.',psych:'Energy and optimism — but the effect is lost when skin tone and color compete.',alts:[{name:'Champagne',hex:'#F7E7CE',pct:76},{name:'Warm Peach',hex:'#FFCBA4',pct:78},{name:'Soft Gold',hex:'#FFD700',pct:72}],tips:[{i:'💡',l:'Pro Tip',t:'Muted gold or deep mustard in accessories rather than main garments is the safe move.'},{i:'🎨',l:'Pair with',t:'White or neutral to dilute the yellow-skin interaction.'},{i:'📅',l:'Best for',t:'As a bag, shoe, or jewellery colour only.'}],outfit:'White wide-leg trousers with a fitted ivory shirt, finished with champagne leather mules — warm without the clash.'},
+    green:{emoji:'✅',score:80,verdict:'GREEN IS VERSATILE & FRESH',why:'Green works well on light skin, especially mid-tones that bridge cool and warm — sage, olive, and deep forest greens all flatter.',profile:'Your light complexion has enough warmth to carry earthy greens while the cool undertones appreciate deeper greens.',psych:'Balance, vitality, and groundedness — green is the colour of effortless good taste.',alts:[{name:'Sage',hex:'#87AE73',pct:78},{name:'Forest',hex:'#228B22',pct:82},{name:'Olive',hex:'#808000',pct:74}],tips:[{i:'💡',l:'Pro Tip',t:'Avoid very yellow-leaning greens like chartreuse. Deep forest and sage are most reliable.'},{i:'🎨',l:'Pair with',t:'Cream, tan, or warm brown for an earthy, cohesive palette.'},{i:'📅',l:'Best for',t:'Casual and smart-casual looks, especially in autumn and spring.'}],outfit:'A sage linen blazer over a cream ribbed tee, with tan trousers and brown loafers — effortlessly editorial.'},
+    purple:{emoji:'✅',score:84,verdict:'PURPLE FLATTERS BEAUTIFULLY',why:'Purple\'s cool-blue tones harmonize with the cool side of light skin\'s undertone range, making it reliably flattering.',profile:'Your light complexion finds purple easy and wearable — from lilac to plum, the range is forgiving and elegant.',psych:'Creativity, romanticism, and quiet sophistication — purple invites intrigue.',alts:[{name:'Dusty Lavender',hex:'#CBA4DA',pct:82},{name:'Plum',hex:'#DDA0DD',pct:80},{name:'Violet',hex:'#7F00FF',pct:76}],tips:[{i:'💡',l:'Pro Tip',t:'Mid-to-deep purples are your strongest choices; very pale lilac can edge toward washed-out.'},{i:'🎨',l:'Pair with',t:'Ivory, grey, or silver for a polished, cool-toned palette.'},{i:'📅',l:'Best for',t:'Creative occasions, social events, and evening wear.'}],outfit:'A dusty violet midi skirt with an ivory fitted turtleneck and silver flats — considered, romantic, quietly bold.'},
+    orange:{emoji:'⚠️',score:50,verdict:'ORANGE NEEDS CAREFUL HANDLING',why:'Orange\'s warmth can overpower the delicate tone balance of light skin if the shade is too saturated or intense.',profile:'Light skin can wear softer warm tones, but a full saturated orange blast risks visual imbalance — choose the right shade.',psych:'Warmth and enthusiasm — lovely as an accent, risky as a full look.',alts:[{name:'Terracotta',hex:'#E2725B',pct:78},{name:'Rust',hex:'#B7410E',pct:74},{name:'Apricot',hex:'#FBCEB1',pct:76}],tips:[{i:'💡',l:'Pro Tip',t:'Terracotta and rust are the sophisticated versions of orange that actually flatter light skin.'},{i:'🎨',l:'Pair with',t:'White, cream, or toffee brown for a warm, considered palette.'},{i:'📅',l:'Best for',t:'Casual, autumnal, and outdoor daytime occasions.'}],outfit:'Rust-coloured linen trousers with a white loose blouse and leather sandals — warm, seasonal, grounded.'},
+    pink:{emoji:'✅',score:89,verdict:'PINK FEELS NATURAL & RIGHT',why:'Pink creates a natural, skin-adjacent warmth on light skin — especially in softer or dusty tones, it feels almost like a second skin.',profile:'Light skin\'s natural warmth makes pink feel genuinely flattering and easy — the colour belongs in your palette.',psych:'Warmth, approachability, and gentle confidence — pink is the colour of being at ease.',alts:[{name:'Blush',hex:'#FFB6C1',pct:86},{name:'Dusty Rose',hex:'#DCAE96',pct:84},{name:'Fuchsia',hex:'#FF00FF',pct:78}],tips:[{i:'💡',l:'Pro Tip',t:'Warm-toned pinks (peach-pink, salmon-pink) flatter light skin especially well.'},{i:'🎨',l:'Pair with',t:'White, cream, or tan for a warm, airy, feminine palette.'},{i:'📅',l:'Best for',t:'Daytime, social occasions, and relaxed events.'}],outfit:'A blush linen shirt dress belted at the waist with tan sandals and gold hoop earrings — relaxed yet pulled together.'},
+    brown:{emoji:'✅',score:76,verdict:'BROWN GROUNDS YOUR LOOK',why:'Warmer browns complement the natural warmth in light skin without creating jarring contrast — grounding and accessible.',profile:'Light skin\'s beige undertones find warm browns genuinely harmonious — tonal and chic when executed well.',psych:'Reliability, earthiness, and warmth — brown is the colour of understated confidence.',alts:[{name:'Camel',hex:'#C19A6B',pct:80},{name:'Toffee',hex:'#D2691E',pct:77},{name:'Chocolate',hex:'#3D1C02',pct:74}],tips:[{i:'💡',l:'Pro Tip',t:'Vary the depth within brown — mix camel with chocolate for a rich, tonal look.'},{i:'🎨',l:'Pair with',t:'Ivory, cream, or terracotta for a warm, earthy palette.'},{i:'📅',l:'Best for',t:'Autumn/winter, casual-smart, and everyday wear.'}],outfit:'A camel turtleneck tucked into chocolate wide-leg trousers, with tan ankle boots — warm, rich, and refined.'},
+    gray:{emoji:'✅',score:78,verdict:'GRAY IS A STRONG NEUTRAL',why:'Grey works well on light skin — cool-toned greys align with the complexion\'s cooler side, warm greys echo the beige warmth.',profile:'Light skin is versatile enough to carry most greys — from dove to charcoal — with ease.',psych:'Sophistication, neutrality, and quiet confidence — grey is elegant without effort.',alts:[{name:'Charcoal',hex:'#4A4A4A',pct:82},{name:'Silver',hex:'#C0C0C0',pct:76},{name:'Stone',hex:'#928E85',pct:74}],tips:[{i:'💡',l:'Pro Tip',t:'Warm greys (with beige tones) are more flattering on light skin than cool blue-greys.'},{i:'🎨',l:'Pair with',t:'Blush, camel, or white for a soft, wearable palette.'},{i:'📅',l:'Best for',t:'Work, smart-casual, and transitional season dressing.'}],outfit:'Stone-grey wide-leg trousers with a white tucked blouse and camel loafers — clean, easy, and timeless.'},
+    navy:{emoji:'✅',score:90,verdict:'NAVY IS AN EXCELLENT CHOICE',why:'Navy is one of the most flattering colors on light skin — it provides rich contrast without the starkness of black.',profile:'Your light complexion finds navy elegantly dramatic — it\'s your most sophisticated neutral.',psych:'Authority, depth, and trust — navy is black\'s more approachable, wearable sibling.',alts:[{name:'Cobalt',hex:'#0047AB',pct:86},{name:'Midnight',hex:'#191970',pct:87},{name:'Royal Blue',hex:'#4169E1',pct:84}],tips:[{i:'💡',l:'Pro Tip',t:'Navy is your go-to formal color. Wear it head-to-toe for a powerful monochrome look.'},{i:'🎨',l:'Pair with',t:'Crisp white, ivory, or pale gold for a classic, refined palette.'},{i:'📅',l:'Best for',t:'Work, formal events, and evening occasions.'}],outfit:'A navy blazer-dress with ivory pointed heels and a simple gold pendant necklace — quietly authoritative and beautifully put-together.'},
+  },
+  medium:{
+    black:{emoji:'✅',score:85,verdict:'BLACK IS A GREAT CHOICE',why:'Black creates sophisticated contrast with your medium skin tone — deep, rich, and versatile.',profile:'Your medium complexion with its warm olive undertones handles black with ease — the contrast is flattering without being jarring.',psych:'Power and timelessness — black on medium skin reads as intentional and commanding.',alts:[{name:'Navy',hex:'#1F305E',pct:82},{name:'Deep Charcoal',hex:'#4A4A4A',pct:80},{name:'Forest Green',hex:'#228B22',pct:76}],tips:[{i:'💡',l:'Pro Tip',t:'All-black works brilliantly on medium skin — try a monochrome look with different textures.'},{i:'🎨',l:'Pair with',t:'Gold accessories, warm terracotta, or rich jewel tones for a cohesive palette.'},{i:'📅',l:'Best for',t:'Formal occasions, evening events, and confident professional settings.'}],outfit:'A tailored black suit with a terracotta silk blouse and gold chain — the warm accent electrifies the classic foundation.'},
+    white:{emoji:'✅',score:82,verdict:'WHITE LOOKS CRISP & VIBRANT',why:'White looks crisp and clean against your medium complexion — the contrast is fresh without being stark.',profile:'Medium skin\'s warm depth makes white pop with beautiful clarity — you can carry it easily in any shade from bright to ivory.',psych:'Freshness, clarity, and warmth — white on medium skin has a uniquely vibrant, sun-kissed quality.',alts:[{name:'Ivory',hex:'#FFFFF0',pct:80},{name:'Cream',hex:'#FFFDD0',pct:78},{name:'Warm White',hex:'#FAF0E6',pct:76}],tips:[{i:'💡',l:'Pro Tip',t:'Bright white makes medium skin glow; ivory is equally beautiful for a softer look.'},{i:'🎨',l:'Pair with',t:'Warm gold, terracotta, or deep brown for a grounded, earthy palette.'},{i:'📅',l:'Best for',t:'Summer occasions, daytime events, and travel looks.'}],outfit:'White wide-leg linen trousers with a fitted white broderie anglaise top, warm brown sandals, and gold hoops — sun-kissed and considered.'},
+    red:{emoji:'✅',score:94,verdict:'RED IS SPECTACULAR ON YOU',why:'Red is stunning on medium skin tones — the warmth of both the colour and your skin create a vibrant, electric harmony.',profile:'Your medium, warm-toned skin amplifies red\'s energy — there\'s a natural kinship between olive warmth and red vitality.',psych:'Power, passion, and magnetic presence — red on medium skin is nothing short of transformative.',alts:[{name:'Burgundy',hex:'#800020',pct:90},{name:'Rust',hex:'#B7410E',pct:88},{name:'Tomato Red',hex:'#FF6347',pct:86}],tips:[{i:'💡',l:'Pro Tip',t:'You can carry both warm and cool reds — experiment with both tomato and cherry reds.'},{i:'🎨',l:'Pair with',t:'Black, white, or warm brown — let the red be the statement.'},{i:'📅',l:'Best for',t:'Evening events, date nights, and occasions where you want to shine.'}],outfit:'A rich red wrap dress with pointed nude heels and a gold clutch — effortless drama that celebrates your warmth.'},
+    blue:{emoji:'✅',score:86,verdict:'BLUE LOOKS SHARP & CLEAR',why:'Blue creates beautiful contrast on medium skin, especially deeper or more saturated tones — fresh, sharp, and polished.',profile:'Medium skin\'s warmth contrasts elegantly against cool-toned blues — the interplay is dynamic and flattering.',psych:'Confidence, calm, and intelligence — blue is the colour of considered choices.',alts:[{name:'Cobalt',hex:'#0047AB',pct:84},{name:'Navy',hex:'#1F305E',pct:87},{name:'Sapphire',hex:'#0F52BA',pct:82}],tips:[{i:'💡',l:'Pro Tip',t:'Deep, rich blues are your sweet spot. Cobalt, sapphire, and navy all work excellently.'},{i:'🎨',l:'Pair with',t:'White, camel, or warm silver for a polished, defined palette.'},{i:'📅',l:'Best for',t:'Work settings, smart-casual, and formal occasions.'}],outfit:'A sapphire satin midi dress with gold kitten heels and a gold clutch — vivid, confident, and evening-ready.'},
+    yellow:{emoji:'⚠️',score:58,verdict:'YELLOW NEEDS THE RIGHT SHADE',why:'Bright yellows can compete with olive medium skin; warmer golds and muted mustards are significantly more flattering.',profile:'Medium olive skin and bright yellow can clash tonally — both are warm, but in ways that amplify rather than complement each other.',psych:'Energy and optimism — but the right version of yellow is everything here.',alts:[{name:'Gold',hex:'#FFD700',pct:82},{name:'Mustard',hex:'#FFDB58',pct:78},{name:'Warm Amber',hex:'#FF7F00',pct:76}],tips:[{i:'💡',l:'Pro Tip',t:'Mustard and ochre are your versions of yellow — rich, warm, and flattering on olive tones.'},{i:'🎨',l:'Pair with',t:'Deep brown, white, or black for strong definition.'},{i:'📅',l:'Best for',t:'Casual and daytime occasions in warm-season settings.'}],outfit:'Mustard wide-leg trousers with a white fitted tee and tan sandals — warm, grounded, and seasonally sharp.'},
+    green:{emoji:'✅',score:82,verdict:'GREEN LOOKS NATURALLY BEAUTIFUL',why:'Green and medium-olive skin have a natural affinity — earthy, warm greens especially feel like a continuation of your natural warmth.',profile:'Olive skin and green are cousins in the colour family — there\'s an organic harmony that makes green feel effortless on you.',psych:'Natural vitality and groundedness — green signals a rootedness that feels honest and elegant.',alts:[{name:'Sage',hex:'#87AE73',pct:80},{name:'Olive',hex:'#808000',pct:78},{name:'Emerald',hex:'#046307',pct:84}],tips:[{i:'💡',l:'Pro Tip',t:'Earthy greens (olive, khaki, sage) are especially natural on medium skin. Go bold with emerald for drama.'},{i:'🎨',l:'Pair with',t:'Warm brown, cream, or terracotta for an earthy, considered palette.'},{i:'📅',l:'Best for',t:'Casual occasions, weekend looks, and outdoor settings.'}],outfit:'An olive utility jacket over a cream ribbed tee, with warm tan trousers and leather loafers — outdoorsy, intentional, effortlessly chic.'},
+    purple:{emoji:'✅',score:80,verdict:'PURPLE ADDS RICH CONTRAST',why:'Purple provides elegant contrast against medium skin, especially deeper shades like plum and violet that play against warm undertones.',profile:'Medium skin\'s warmth makes it a versatile canvas for purple — the cool-warm contrast is richly balanced.',psych:'Luxury, depth, and creative confidence — purple on medium skin carries an artistic authority.',alts:[{name:'Plum',hex:'#DDA0DD',pct:78},{name:'Mauve',hex:'#E0B0FF',pct:76},{name:'Violet',hex:'#7F00FF',pct:80}],tips:[{i:'💡',l:'Pro Tip',t:'Deep purples (plum, aubergine) flatter medium skin more than pale lilacs.'},{i:'🎨',l:'Pair with',t:'Gold, ivory, or deep brown for richly layered tonal contrast.'},{i:'📅',l:'Best for',t:'Evening wear, creative events, and occasions that call for personality.'}],outfit:'A deep plum midi dress with gold strappy heels and warm amber accessories — decadent, rich, and evening-perfect.'},
+    orange:{emoji:'✅',score:78,verdict:'ORANGE FEELS WARM & VIBRANT',why:'Orange harmonizes beautifully with the warm undertones in medium skin — earthy and natural, especially in terracotta tones.',profile:'Medium olive skin and orange share a warm-earthy DNA — the pairing feels organic and deeply flattering.',psych:'Energy, warmth, and vivid presence — orange on medium skin is bold without being jarring.',alts:[{name:'Terracotta',hex:'#E2725B',pct:82},{name:'Rust',hex:'#B7410E',pct:80},{name:'Burnt Sienna',hex:'#E97451',pct:78}],tips:[{i:'💡',l:'Pro Tip',t:'Terracotta and rust are the most sophisticated orange variants for olive skin. They feel genuinely earthy.'},{i:'🎨',l:'Pair with',t:'Cream, ivory, or warm brown for a cohesive earthy palette.'},{i:'📅',l:'Best for',t:'Casual occasions, summer dressing, and outdoor events.'}],outfit:'A terracotta linen co-ord with cream sandals and layered gold necklaces — warm, textural, and perfectly sun-aligned.'},
+    pink:{emoji:'✅',score:76,verdict:'PINK IS WARM & FLATTERING',why:'Warm, dusty pinks complement medium olive skin — there\'s a subtle harmony between the pink\'s warmth and your skin\'s depth.',profile:'Medium skin can carry pink well across a wide range of shades — warm roses and dusty pinks are especially flattering.',psych:'Gentle confidence and approachability — pink adds softness to medium skin\'s natural vibrancy.',alts:[{name:'Coral',hex:'#FF6B6B',pct:80},{name:'Dusty Rose',hex:'#DCAE96',pct:78},{name:'Warm Blush',hex:'#DEBEBE',pct:76}],tips:[{i:'💡',l:'Pro Tip',t:'Warm coral-pinks and peachy pinks are the most flattering on olive-medium skin tones.'},{i:'🎨',l:'Pair with',t:'White, tan, or warm nude for a fresh, sun-touched palette.'},{i:'📅',l:'Best for',t:'Casual daytime and relaxed social occasions.'}],outfit:'A coral wrap top with white linen trousers and tan espadrilles — breezy, vibrant, and seasonally perfect.'},
+    brown:{emoji:'✅',score:80,verdict:'BROWN IS EFFORTLESSLY NATURAL',why:'Brown tones harmonize naturally with medium skin\'s warm undertones — earthy, grounded, and deeply flattering.',profile:'Medium skin finds brown genuinely harmonious — tonal depth and natural warmth align beautifully.',psych:'Warmth, earthiness, and timeless reliability — brown dressing on medium skin has quiet, confident authority.',alts:[{name:'Toffee',hex:'#D2691E',pct:78},{name:'Chocolate',hex:'#3D1C02',pct:82},{name:'Camel',hex:'#C19A6B',pct:80}],tips:[{i:'💡',l:'Pro Tip',t:'Monochrome brown works beautifully on medium skin — try different depths within the same family.'},{i:'🎨',l:'Pair with',t:'Cream, ivory, or warm orange for a rich, earthy palette.'},{i:'📅',l:'Best for',t:'Autumn/winter and everyday casual-smart looks.'}],outfit:'Chocolate brown wide-leg trousers with a camel turtleneck and tan leather boots — tonal, textured, and undeniably sophisticated.'},
+    gray:{emoji:'⚠️',score:60,verdict:'GRAY NEEDS A WARM VERSION',why:'Cool grey can feel flat against medium skin\'s warmth; warm stone greys are far more flattering and cohesive.',profile:'Medium olive skin needs grey to have some warmth — cool grey can make the complexion look washed out by comparison.',psych:'Sophistication with potential neutrality — get the grey right and it works; get it wrong and everything deflates.',alts:[{name:'Stone',hex:'#928E85',pct:78},{name:'Warm Taupe',hex:'#BDB5A6',pct:76},{name:'Khaki',hex:'#C3B091',pct:74}],tips:[{i:'💡',l:'Pro Tip',t:'Look for greige or stone rather than pure grey — the warm undertone is crucial for olive skin.'},{i:'🎨',l:'Pair with',t:'Cream, warm camel, or terracotta to keep the look from going flat.'},{i:'📅',l:'Best for',t:'Everyday smart looks when you want a reliable, understated foundation.'}],outfit:'Warm stone trousers with a cream silk blouse and tan block-heel mules — grounded, easy, and quietly polished.'},
+    navy:{emoji:'✅',score:84,verdict:'NAVY GIVES STRIKING CONTRAST',why:'Navy creates elegant, striking contrast against medium skin\'s warmth — rich and sophisticated without being harsh.',profile:'Your medium complexion finds navy deeply flattering — the richness of the colour plays against your warm undertones magnificently.',psych:'Confidence and deep authority — navy on medium skin is a power move with grace.',alts:[{name:'Cobalt',hex:'#0047AB',pct:80},{name:'Midnight',hex:'#191970',pct:82},{name:'Indigo',hex:'#4B0082',pct:78}],tips:[{i:'💡',l:'Pro Tip',t:'Navy is your most versatile formal color — use it as you would black but with a softer result.'},{i:'🎨',l:'Pair with',t:'Gold accessories and warm ivory for a richly contrasted palette.'},{i:'📅',l:'Best for',t:'Formal, work, and evening occasions — deeply reliable.'}],outfit:'A navy sheath dress with gold kitten heels and a delicate gold chain — refined, confident, and quietly commanding.'},
+  },
+  dark:{
+    black:{emoji:'✅',score:98,verdict:'BLACK IS MAGNIFICENT ON YOU',why:'Black is absolutely magnificent on dark skin — the richness of both creates a deeply regal, flawless combination.',profile:'Your dark, rich complexion gives black an entirely different quality — it becomes lush and velvety rather than stark.',psych:'Pure power, elegance, and commanding presence — black on dark skin is nothing short of cinematic.',alts:[{name:'Navy',hex:'#1F305E',pct:95},{name:'Deep Charcoal',hex:'#4A4A4A',pct:90},{name:'Oxblood',hex:'#800000',pct:88}],tips:[{i:'💡',l:'Pro Tip',t:'Monochromatic all-black looks are exceptionally powerful on dark skin — lean into it fully.'},{i:'🎨',l:'Pair with',t:'Gold, platinum, or white accessories for maximum impact.'},{i:'📅',l:'Best for',t:'Any occasion — black on dark skin never misses.'}],outfit:'A structured all-black look — tailored blazer, slim trousers, and black pointed heels — with a single gold cuff. Impeccable.'},
+    white:{emoji:'✅',score:94,verdict:'WHITE CREATES STUNNING CONTRAST',why:'White creates breathtaking contrast and luminosity against dark skin — the interplay is visually extraordinary.',profile:'Dark skin\'s rich depth makes white vibrant in a way few other skin tones can achieve — the contrast is bold, clean, and genuinely striking.',psych:'Luminosity, purity, and confident radiance — white on dark skin is a statement of effortless power.',alts:[{name:'Cream',hex:'#FFFDD0',pct:92},{name:'Ivory',hex:'#FFFFF0',pct:90},{name:'Bright White',hex:'#FFFFFF',pct:94}],tips:[{i:'💡',l:'Pro Tip',t:'Crisp optical white shows most dramatically on dark skin — go bold with it.'},{i:'🎨',l:'Pair with',t:'Gold accessories, warm metallics, and bold jewellery for maximum luminosity.'},{i:'📅',l:'Best for',t:'Any occasion — white on dark skin is perpetually stunning.'}],outfit:'An all-white linen suit — wide-leg trousers and an oversized blazer — with gold jewellery and white trainers. An instant classic.'},
+    red:{emoji:'✅',score:90,verdict:'RED IS BOLD & POWERFUL',why:'Red pops brilliantly against dark skin — the depth of your complexion gives red an even richer, more vivid quality.',profile:'Dark skin provides the perfect backdrop for red\'s drama — the colour glows in a way that lighter tones can\'t replicate.',psych:'Pure power, desire, and magnetic intensity — red on dark skin is unforgettable.',alts:[{name:'Crimson',hex:'#DC143C',pct:88},{name:'Oxblood',hex:'#800000',pct:86},{name:'Scarlet',hex:'#FF2400',pct:84}],tips:[{i:'💡',l:'Pro Tip',t:'Both warm and cool reds work brilliantly on dark skin — explore the full spectrum.'},{i:'🎨',l:'Pair with',t:'Gold, black, or white to let the red radiate at full intensity.'},{i:'📅',l:'Best for',t:'Evening events, celebrations, and any occasion where you want to make an entrance.'}],outfit:'A scarlet satin slip dress with strappy gold heels and a gold cuff bracelet — viscerally elegant and impossible to ignore.'},
+    yellow:{emoji:'✅',score:86,verdict:'YELLOW POPS BEAUTIFULLY',why:'Yellow pops brilliantly against dark skin — the contrast between your deep complexion and the vivid yellow is visually extraordinary.',profile:'Dark skin creates perfect conditions for yellow to radiate — the depth of your complexion makes yellow brighter and more vibrant than on any other skin tone.',psych:'Joy, vitality, and golden energy — yellow on dark skin is a celebration.',alts:[{name:'Gold',hex:'#FFD700',pct:88},{name:'Sunflower',hex:'#FFC512',pct:84},{name:'Amber',hex:'#FF7F00',pct:84}],tips:[{i:'💡',l:'Pro Tip',t:'Bright, saturated yellows are your best friend — don\'t be shy about going bold.'},{i:'🎨',l:'Pair with',t:'White or black to let the yellow be the entire story.'},{i:'📅',l:'Best for',t:'Daytime, summer events, and occasions where you want maximum energy.'}],outfit:'A bright yellow midi dress with black strappy sandals and simple gold jewellery — joyful, vibrant, and genuinely arresting.'},
+    blue:{emoji:'✅',score:88,verdict:'BLUE IS RICHLY CONTRASTED',why:'Blue looks exceptional on dark skin — deep, rich blues especially create a luxurious depth that feels considered and powerful.',profile:'Your dark complexion amplifies blue\'s depth and richness, making jewel-toned blues look especially opulent.',psych:'Sophistication, depth, and quiet power — blue on dark skin exudes substance.',alts:[{name:'Cobalt',hex:'#0047AB',pct:86},{name:'Royal Blue',hex:'#4169E1',pct:84},{name:'Indigo',hex:'#4B0082',pct:82}],tips:[{i:'💡',l:'Pro Tip',t:'Royal blue and cobalt are especially vivid on dark skin — the contrast is superb.'},{i:'🎨',l:'Pair with',t:'White, gold, or silver for maximum brightness and definition.'},{i:'📅',l:'Best for',t:'Formal occasions, evening events, and smart-casual settings.'}],outfit:'A cobalt blue tailored blazer over a white tee with dark-wash jeans and white trainers — contemporary, sharp, and impactful.'},
+    green:{emoji:'✅',score:84,verdict:'GREEN IS RICH & LUXURIOUS',why:'Deep greens look incredibly lush and luxurious on dark skin — the richness of both creates a powerful, opulent combination.',profile:'Dark skin\'s depth gives green a jewel-like quality — emerald and deep forest greens especially glow beautifully.',psych:'Luxury, power, and natural authority — green on dark skin radiates a regal, grounded energy.',alts:[{name:'Emerald',hex:'#046307',pct:88},{name:'Hunter Green',hex:'#355E3B',pct:86},{name:'Jade',hex:'#00A86B',pct:82}],tips:[{i:'💡',l:'Pro Tip',t:'Deep, saturated greens are most impactful on dark skin — the richer the better.'},{i:'🎨',l:'Pair with',t:'Gold, cream, or black for a richly layered, jewel-toned palette.'},{i:'📅',l:'Best for',t:'Evening events, formal occasions, and editorial-style moments.'}],outfit:'An emerald green silk midi dress with gold block heels and a gold statement necklace — regal, luminous, and utterly powerful.'},
+    purple:{emoji:'✅',score:92,verdict:'PURPLE IS REGAL & STRIKING',why:'Purple looks genuinely regal on dark skin — the depth of colour and complexion create a magnificent, jewelled quality.',profile:'Your rich dark complexion gives purple an extraordinary depth and vibrancy that truly sets it apart.',psych:'Royalty, power, and spiritual depth — purple on dark skin is nothing short of majestic.',alts:[{name:'Plum',hex:'#DDA0DD',pct:90},{name:'Violet',hex:'#7F00FF',pct:88},{name:'Aubergine',hex:'#614051',pct:86}],tips:[{i:'💡',l:'Pro Tip',t:'Deep purples (plum, aubergine, violet) make the most powerful statements on dark skin.'},{i:'🎨',l:'Pair with',t:'Gold and black to amplify the regal quality of the combination.'},{i:'📅',l:'Best for',t:'Evening occasions, celebrations, and any moment that calls for grandeur.'}],outfit:'A deep plum velvet blazer over a black satin blouse with wide-leg black trousers and gold mules — genuinely magnificent.'},
+    orange:{emoji:'✅',score:82,verdict:'ORANGE LOOKS VIBRANT & WARM',why:'Orange looks vivid and warm on dark skin — terracotta and burnt orange especially create a beautifully earthy, sun-warmed quality.',profile:'Your dark complexion gives warm oranges a particularly glowing quality — earthy and richly radiant.',psych:'Warmth, earthiness, and vibrant energy — orange on dark skin is joyfully alive.',alts:[{name:'Terracotta',hex:'#E2725B',pct:84},{name:'Burnt Orange',hex:'#CC5500',pct:82},{name:'Amber',hex:'#FF7F00',pct:80}],tips:[{i:'💡',l:'Pro Tip',t:'Warm, saturated oranges — from saffron to terracotta — all work brilliantly on dark skin.'},{i:'🎨',l:'Pair with',t:'Black, white, or cream for clean, high-contrast definition.'},{i:'📅',l:'Best for',t:'Daytime occasions, festivals, and casual-vibrant settings.'}],outfit:'A burnt orange maxi dress with strappy black sandals and layered gold jewellery — earthy, radiant, and festival-perfect.'},
+    pink:{emoji:'✅',score:80,verdict:'PINK CREATES BEAUTIFUL WARMTH',why:'Hot pinks and deep magentas look especially vibrant on dark skin — the contrast is bold, warm, and richly flattering.',profile:'Your dark complexion amplifies pink\'s vibrancy — especially at bolder, more saturated intensities.',psych:'Warmth, energy, and playful confidence — bold pink on dark skin radiates life.',alts:[{name:'Hot Pink',hex:'#FF69B4',pct:82},{name:'Fuchsia',hex:'#FF00FF',pct:80},{name:'Magenta',hex:'#FF0090',pct:78}],tips:[{i:'💡',l:'Pro Tip',t:'Go bold — hot pink and fuchsia are more flattering on dark skin than pale or dusty pinks.'},{i:'🎨',l:'Pair with',t:'Black or white for maximum vibrancy and definition.'},{i:'📅',l:'Best for',t:'Parties, evening events, and occasions where energy is the goal.'}],outfit:'A fuchsia satin midi skirt with a white fitted tee and black strappy heels — vibrant, fun, and effortlessly bold.'},
+    brown:{emoji:'⚠️',score:55,verdict:'BROWN NEEDS CAREFUL CONTRAST',why:'Browns can blend with dark skin rather than contrast, reducing the visual definition of your look — deeper or much lighter browns work better.',profile:'Dark skin and mid-toned browns can lack the contrast needed for a defined, impactful look. Choose extreme ends of the brown spectrum.',psych:'Earthiness and natural connection — but without sufficient contrast, the statement gets lost.',alts:[{name:'Cream',hex:'#FFFDD0',pct:85},{name:'Deep Chocolate',hex:'#3D1C02',pct:75},{name:'Warm Gold',hex:'#FFD700',pct:80}],tips:[{i:'💡',l:'Pro Tip',t:'If wearing brown, go either very dark (near-black chocolate) or very light (cream/camel) for definition.'},{i:'🎨',l:'Pair with',t:'White, gold, or a bright accent colour for clear contrast.'},{i:'📅',l:'Best for',t:'Casual looks — use as a secondary neutral rather than a hero color.'}],outfit:'A deep chocolate turtleneck with wide cream trousers and gold mules — the contrast between the two pieces defines the look beautifully.'},
+    gray:{emoji:'✅',score:76,verdict:'GRAY IS COOL & SOPHISTICATED',why:'Cool grey creates an elegant, high-fashion contrast on dark skin — understated but deeply sophisticated.',profile:'Your dark complexion handles grey confidently — especially in deeper or more saturated shades.',psych:'Understated authority and quiet sophistication — grey on dark skin says "I don\'t need to shout."',alts:[{name:'Charcoal',hex:'#4A4A4A',pct:80},{name:'Steel',hex:'#708090',pct:78},{name:'Platinum',hex:'#E5E4E2',pct:74}],tips:[{i:'💡',l:'Pro Tip',t:'Charcoal and deep grey are more impactful than pale grey on dark skin — choose with depth in mind.'},{i:'🎨',l:'Pair with',t:'White, gold, or a bold accent colour for definition and personality.'},{i:'📅',l:'Best for',t:'Smart-casual, work settings, and understated formal occasions.'}],outfit:'Charcoal grey wide-leg trousers with a white fitted turtleneck and silver jewellery — minimal, sharp, and quietly commanding.'},
+    navy:{emoji:'✅',score:90,verdict:'NAVY IS DEEPLY LUXURIOUS',why:'Navy looks deeply luxurious on dark skin — rich, dimensional, and elegantly contrasted against your deep complexion.',profile:'Your rich complexion makes navy vibrate with depth — the tone-on-tone richness creates something genuinely opulent.',psych:'Depth, authority, and quiet grandeur — navy on dark skin has a luxurious, timeless quality.',alts:[{name:'Cobalt',hex:'#0047AB',pct:87},{name:'Royal Blue',hex:'#4169E1',pct:86},{name:'Indigo',hex:'#4B0082',pct:84}],tips:[{i:'💡',l:'Pro Tip',t:'Head-to-toe navy on dark skin creates an incredibly rich, monochromatic editorial look.'},{i:'🎨',l:'Pair with',t:'Gold accessories and white accents for maximum contrast and polish.'},{i:'📅',l:'Best for',t:'Formal occasions, evening events, and confident professional settings.'}],outfit:'A navy tailored jumpsuit with gold strappy heels and bold gold hoop earrings — richly commanding and impeccably styled.'},
+  },
+  deep:{
+    black:{emoji:'💯',score:100,verdict:'BLACK IS FLAWLESS PERFECTION',why:'Black on deep skin is nothing short of perfection — pure elegance, absolute power, unbeatable sophistication. This is the combination.',profile:'Your deep, ebony complexion creates a rich-toned canvas that elevates black from a color choice to an aesthetic statement of rare power.',psych:'Pure, undiluted elegance and authority — there is nothing more commanding in fashion than deep skin in black.',alts:[{name:'Navy',hex:'#1F305E',pct:98},{name:'Deep Charcoal',hex:'#4A4A4A',pct:95},{name:'Oxblood',hex:'#800000',pct:92}],tips:[{i:'💡',l:'Pro Tip',t:'All-black on deep skin is a fashion superpower — own it completely, head to toe.'},{i:'🎨',l:'Pair with',t:'Gold, platinum, or a single bold accent color for elevated drama.'},{i:'📅',l:'Best for',t:'Every single occasion. Black on deep skin is always the right answer.'}],outfit:'A perfectly tailored all-black look — structured blazer, wide-leg trousers, silk blouse — with a single gold statement cuff. Absolute perfection.'},
+    white:{emoji:'✅',score:96,verdict:'WHITE IS RADIANT & DAZZLING',why:'White glows against deep skin in a way that is genuinely dazzling — the contrast is bold, electric, and absolutely stunning.',profile:'Your deep, radiant complexion gives white its most powerful expression — the contrast is extraordinary and luminous.',psych:'Pure luminosity and commanding presence — white on deep skin radiates an almost celestial quality.',alts:[{name:'Bright White',hex:'#FFFFFF',pct:94},{name:'Ivory',hex:'#FFFFF0',pct:90},{name:'Champagne Gold',hex:'#F7E7CE',pct:88}],tips:[{i:'💡',l:'Pro Tip',t:'The brightest, most saturated white makes the most extraordinary statement on deep skin.'},{i:'🎨',l:'Pair with',t:'Gold jewellery, bold accessories, or a single accent color for a showstopping look.'},{i:'📅',l:'Best for',t:'Any occasion — this combination never fails.'}],outfit:'An all-white tailored suit with a crisp white shirt, gold loafers, and a single gold chain — effortlessly iconic.'},
+    red:{emoji:'✅',score:94,verdict:'RED IS ABSOLUTELY ELECTRIC',why:'Red on deep skin is electric — the richness of your complexion amplifies red\'s intensity to create something genuinely extraordinary.',profile:'Your deep complexion gives red a particularly vivid, saturated quality that lesser contrasts simply cannot achieve.',psych:'Maximum power and passion — red on deep skin is a declaration of complete intention.',alts:[{name:'Crimson',hex:'#DC143C',pct:92},{name:'Scarlet',hex:'#FF2400',pct:90},{name:'Deep Ruby',hex:'#9B111E',pct:88}],tips:[{i:'💡',l:'Pro Tip',t:'Any red works — warm, cool, saturated, deep. Your complexion makes them all extraordinary.'},{i:'🎨',l:'Pair with',t:'Black, white, or gold for a clean frame that lets the red radiate fully.'},{i:'📅',l:'Best for',t:'Evening events, celebrations, and any moment that demands presence.'}],outfit:'A deep crimson halter gown with gold strappy heels and a single gold cuff bracelet — deeply powerful and visually extraordinary.'},
+    blue:{emoji:'✅',score:90,verdict:'BLUE IS RICHLY STRIKING',why:'Blue looks richly striking on deep skin — the jewel-toned depth of both creates a powerful, high-fashion combination.',profile:'Your deep complexion amplifies the richness of blue, making jewel-tones especially opulent and impactful.',psych:'Deep authority and luxury — blue on deep skin has a rare, almost gem-like quality.',alts:[{name:'Royal Blue',hex:'#4169E1',pct:88},{name:'Cobalt',hex:'#0047AB',pct:86},{name:'Electric Blue',hex:'#7DF9FF',pct:84}],tips:[{i:'💡',l:'Pro Tip',t:'Electric blue and royal blue on deep skin is a combination that stops rooms. Use it boldly.'},{i:'🎨',l:'Pair with',t:'White, gold, or silver for high-contrast definition and polish.'},{i:'📅',l:'Best for',t:'Evening occasions, formal settings, and fashion-forward moments.'}],outfit:'An electric blue structured blazer with white tailored trousers and silver mules — sharp, vivid, and impeccably powerful.'},
+    yellow:{emoji:'✅',score:92,verdict:'YELLOW IS ABSOLUTELY DAZZLING',why:'Yellow is dazzling on deep skin — it radiates with a golden warmth that is uniquely, magnificently flattering.',profile:'Your deep, radiant complexion gives yellow a sun-like glow that no other skin tone achieves — it\'s a natural crown.',psych:'Golden power and radiant joy — yellow on deep skin is a celebration of pure vitality.',alts:[{name:'Gold',hex:'#FFD700',pct:94},{name:'Saffron',hex:'#F4C430',pct:90},{name:'Sunflower',hex:'#FFC512',pct:88}],tips:[{i:'💡',l:'Pro Tip',t:'The brighter and more saturated the yellow, the more extraordinary the result on deep skin.'},{i:'🎨',l:'Pair with',t:'White, black, or gold for clean, powerful framing of the yellow.'},{i:'📅',l:'Best for',t:'Daytime celebrations, events, and any occasion deserving of joy.'}],outfit:'A bright saffron maxi dress with gold strappy sandals and layered gold jewellery — solar, radiant, and breathtaking.'},
+    green:{emoji:'✅',score:88,verdict:'GREEN LOOKS LIKE ROYALTY',why:'Deep, jewel-toned greens look richly regal on deep skin — emerald especially creates a combination of rare luxury and power.',profile:'Your deep complexion gives green a jewelled, opulent quality — emerald and forest greens especially shine.',psych:'Royal richness and natural authority — green on deep skin exudes a powerful, grounded majesty.',alts:[{name:'Emerald',hex:'#046307',pct:90},{name:'Jade',hex:'#00A86B',pct:86},{name:'Deep Teal',hex:'#008080',pct:84}],tips:[{i:'💡',l:'Pro Tip',t:'Jewel-tone greens at their most saturated create the most powerful statements on deep skin.'},{i:'🎨',l:'Pair with',t:'Gold, black, or white for maximum richness and definition.'},{i:'📅',l:'Best for',t:'Evening events, formal occasions, and fashion-defining moments.'}],outfit:'An emerald green off-shoulder gown with gold stiletto heels and a bold gold choker — absolutely regal and unforgettable.'},
+    purple:{emoji:'✅',score:97,verdict:'PURPLE IS YOUR ROYAL COLOUR',why:'Purple looks regal and rich on deep skin tones — the combination carries a genuinely royal authority that feels fated.',profile:'Your deep complexion gives purple a rare, jewel-like luminosity that amplifies its majesty to extraordinary levels.',psych:'Pure royalty, spiritual power, and magnificent authority — purple on deep skin is a colour that commands reverence.',alts:[{name:'Plum',hex:'#DDA0DD',pct:95},{name:'Violet',hex:'#7F00FF',pct:93},{name:'Aubergine',hex:'#614051',pct:90}],tips:[{i:'💡',l:'Pro Tip',t:'Deep, saturated purples are your crown jewels — go all-in with violet, plum, or aubergine.'},{i:'🎨',l:'Pair with',t:'Gold accessories for a regal palette that amplifies the majesty of the combination.'},{i:'📅',l:'Best for',t:'Evening occasions, celebrations, and any moment that demands magnificence.'}],outfit:'A deep violet satin gown with gold platform heels and a bold gold statement necklace — nothing less than royal.'},
+    orange:{emoji:'✅',score:86,verdict:'ORANGE LOOKS BRILLIANTLY WARM',why:'Orange radiates with extraordinary warmth and vibrancy on deep skin — the earth tones find their richest expression here.',profile:'Deep skin and orange share a sun-warmed richness that creates a particularly vivid, joyful combination.',psych:'Radiant warmth and vibrant energy — orange on deep skin is a burst of golden light.',alts:[{name:'Saffron',hex:'#F4C430',pct:88},{name:'Burnt Sienna',hex:'#E97451',pct:84},{name:'Terracotta',hex:'#E2725B',pct:82}],tips:[{i:'💡',l:'Pro Tip',t:'Saffron and burnt orange are particularly magnificent on deep skin. Don\'t hold back.'},{i:'🎨',l:'Pair with',t:'White, black, or deep brown for clean definition of the orange\'s warmth.'},{i:'📅',l:'Best for',t:'Celebrations, festivals, and vibrant daytime occasions.'}],outfit:'A saffron wrap dress with strappy black sandals and layered gold jewellery — warm, luminous, and vibrantly alive.'},
+    pink:{emoji:'✅',score:84,verdict:'PINK IS BOLD & VIBRANT',why:'Bold, saturated pinks — especially magenta and hot pink — look vibrant and powerful on deep skin.',profile:'Your deep complexion makes bold pinks radiate with exceptional vibrancy — the contrast is electric.',psych:'Confident femininity and vibrant energy — bold pink on deep skin says everything at once.',alts:[{name:'Fuchsia',hex:'#FF00FF',pct:86},{name:'Magenta',hex:'#FF0090',pct:84},{name:'Hot Pink',hex:'#FF69B4',pct:82}],tips:[{i:'💡',l:'Pro Tip',t:'Go bold — fuchsia and magenta at full saturation look extraordinary on deep skin.'},{i:'🎨',l:'Pair with',t:'Black or white to give the pink maximum contrast and impact.'},{i:'📅',l:'Best for',t:'Parties, evening occasions, and any moment calling for vibrant confidence.'}],outfit:'A fuchsia satin jumpsuit with black strappy heels and a single gold cuff — bold, exquisite, and completely commanding.'},
+    brown:{emoji:'⚠️',score:48,verdict:'BROWN REDUCES CONTRAST',why:'Mid-toned browns on deep skin reduce visual contrast significantly — the tones blur together rather than defining each other.',profile:'Deep skin needs strong contrast or bold color to create definition; brown can feel like it disappears against your complexion.',psych:'Earthiness that works in theory but loses impact on deep skin — the visual story becomes muted.',alts:[{name:'White',hex:'#FFFFFF',pct:96},{name:'Gold',hex:'#FFD700',pct:90},{name:'Bright Red',hex:'#E74C3C',pct:92}],tips:[{i:'💡',l:'Pro Tip',t:'If you love brown, use it sparingly as an accessory — bags or shoes — rather than hero garments.'},{i:'🎨',l:'Pair with',t:'Crisp white or bright gold for the contrast that browns alone can\'t provide.'},{i:'📅',l:'Best for',t:'Accessories and detail elements only.'}],outfit:'A white tailored suit with tan leather accessories and gold jewellery — the warmth of brown as an accent rather than the focus.'},
+    gray:{emoji:'✅',score:78,verdict:'GRAY IS COOL & EDITORIAL',why:'Deep grey and charcoal create a cool, high-fashion quality on deep skin — understated but richly sophisticated.',profile:'Your deep complexion handles grey with elegant confidence — especially deep charcoals and cool steel tones.',psych:'Quiet editorial authority — grey on deep skin is fashion without the fanfare.',alts:[{name:'Charcoal',hex:'#4A4A4A',pct:82},{name:'Steel Grey',hex:'#708090',pct:80},{name:'Platinum',hex:'#E5E4E2',pct:76}],tips:[{i:'💡',l:'Pro Tip',t:'Charcoal and deep grey are your strongest grey options — they provide better contrast than pale greys.'},{i:'🎨',l:'Pair with',t:'White, gold, or a vibrant accent for definition and personality.'},{i:'📅',l:'Best for',t:'Smart-casual, editorial moments, and understated formal occasions.'}],outfit:'A charcoal grey oversized blazer over a white fitted tee with wide-leg black trousers and silver jewellery — cool, sharp, and effortlessly editorial.'},
+    navy:{emoji:'✅',score:92,verdict:'NAVY IS DEEPLY MAGNIFICENT',why:'Navy on deep skin is richly magnificent — the jewel-toned depth creates a rare, opulent combination of great beauty.',profile:'Your deep complexion gives navy an extraordinary dimensional richness — it becomes something between a colour and a jewel.',psych:'Deep luxury and commanding authority — navy on deep skin is the colour of quiet magnificence.',alts:[{name:'Royal Blue',hex:'#4169E1',pct:90},{name:'Cobalt',hex:'#0047AB',pct:88},{name:'Indigo',hex:'#4B0082',pct:86}],tips:[{i:'💡',l:'Pro Tip',t:'Head-to-toe navy on deep skin is a genuinely extraordinary fashion moment — embrace it.'},{i:'🎨',l:'Pair with',t:'Gold jewellery and white accessories for luminous contrast.'},{i:'📅',l:'Best for',t:'Formal occasions, evening events, and any moment deserving magnificence.'}],outfit:'A navy velvet suit — fitted blazer and wide-leg trousers — with a gold blouse and gold stiletto heels. Absolutely regal.'},
+  },
+};
+
+const SKIN_PROFILES={
+  fair:{label:'Fair',desc:'Your porcelain, cool-toned complexion is light-reactive and luminous — it responds beautifully to cool, soft contrasts and clear, crisp tones.'},
+  light:{label:'Light',desc:'Your beige, gently warm complexion bridges cool and warm — versatile enough for a wide colour range, especially when contrast is considered.'},
+  medium:{label:'Medium',desc:'Your olive, warm-toned complexion has natural vibrancy and adaptability — it harmonizes with both earth tones and bold, saturated colors.'},
+  dark:{label:'Dark',desc:'Your rich brown complexion is deeply warm and luminous — it amplifies colors rather than simply wearing them, making bold choices especially rewarding.'},
+  deep:{label:'Deep',desc:'Your ebony, radiant complexion is one of fashion\'s most powerful canvases — colors achieve their fullest, most vivid expression against your beautiful depth.'},
+};
+
+const OCC_CONTEXT={
+  formal:{tip:'Perfect for your formal setting — polished and professional.'},
+  casual:{tip:'Ideal for a relaxed, casual occasion — easy and effortless.'},
+  evening:{tip:'Made for evening — the drama is entirely appropriate.'},
+  day:{tip:'Great for a day out — fresh, vibrant, and occasion-right.'},
+  null:{tip:'Versatile enough for almost any occasion.'},
+};
+
+// ──────── STATE ────────
+let selectedTone=null,selectedColor=null,selectedOcc=null,currentResult=null;
+
+// ──────── BUILD SWATCHES ────────
+function buildSwatches(){
+  const g=document.getElementById('swatchGrid');
+  COLORS.forEach(c=>{
+    const btn=document.createElement('button');
+    btn.className='swatch-btn';
+    btn.setAttribute('data-color',c.id);
+    btn.onclick=()=>selectColor(btn,c);
+    const labelColor=c.dark?'#2D2D2D':'#fff';
+    btn.innerHTML=`<div class="swatch-inner" style="background:${c.hex}"><span class="swatch-label" style="color:${labelColor}">${c.label}</span></div>`;
+    g.appendChild(btn);
+  });
+}
+
+// ──────── PARTICLES ────────
+function buildParticles(){
+  const p=document.getElementById('particles');
+  const colors=['#E94560','#0F3460','#16213E','#F39C12'];
+  for(let i=0;i<18;i++){
+    const d=document.createElement('div');
+    d.className='particle';
+    const size=Math.random()*40+8;
+    d.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${Math.random()*14+8}s;animation-delay:${Math.random()*8}s;`;
+    p.appendChild(d);
+  }
+}
+
+// ──────── SELECTION HANDLERS ────────
+function selectTone(btn){
+  document.querySelectorAll('.tone-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedTone=btn.getAttribute('data-tone');
+  checkCTA();
+}
+
+function selectColor(btn,c){
+  document.querySelectorAll('.swatch-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedColor=c;
+  checkCTA();
+}
+
+function selectOcc(btn){
+  const wasSelected=btn.classList.contains('selected');
+  document.querySelectorAll('.occ-btn').forEach(b=>b.classList.remove('selected'));
+  if(!wasSelected){btn.classList.add('selected');selectedOcc=btn.getAttribute('data-occ');}
+  else selectedOcc=null;
+}
+
+function checkCTA(){
+  const btn=document.getElementById('ctaBtn');
+  btn.disabled=!(selectedTone&&selectedColor);
+}
+
+// ──────── NAVIGATION ────────
+function goBack(){
+  document.getElementById('page2').classList.add('hidden');
+  document.getElementById('page2').classList.remove('slide-out');
+  document.getElementById('page1').classList.remove('slide-out');
+  document.getElementById('page1').classList.remove('hidden');
+}
+
+// ──────── MAIN LOGIC ────────
+function getRecommendation(){
+  if(!selectedTone||!selectedColor)return;
+  const btn=document.getElementById('ctaBtn');
+  const sp=document.getElementById('spinner');
+  const lbl=document.getElementById('ctaLabel');
+  btn.disabled=true;sp.style.display='block';lbl.textContent='Analyzing...';
+  setTimeout(()=>{
+    sp.style.display='none';lbl.textContent='🔮 Get My Style Recommendation';
+    btn.disabled=false;
+    showResults();
+  },1200);
+}
+
+function showResults(){
+  const toneData=LOGIC[selectedTone];
+  const result=toneData&&toneData[selectedColor.id];
+  if(!result){showFallback();return;}
+  currentResult={tone:selectedTone,color:selectedColor,occ:selectedOcc,result};
+
+  // HERO
+  document.getElementById('resultEmoji').textContent=result.emoji;
+  const vText=result.verdict.replace(selectedColor.label.toUpperCase(),`<span>${selectedColor.label.toUpperCase()}</span>`);
+  document.getElementById('resultVerdict').innerHTML=vText;
+
+  // Score ring
+  const pct=result.score;
+  const circ=document.getElementById('scoreCircle');
+  const r=42,c=2*Math.PI*r;
+  circ.setAttribute('stroke-dasharray',c);
+  circ.setAttribute('stroke-dashoffset',c);
+  document.getElementById('scorePct').textContent=pct+'%';
+  setTimeout(()=>{circ.setAttribute('stroke-dashoffset',c*(1-pct/100));},200);
+
+  // Score ring color by score
+  const sc=document.getElementById('scoreCircle');
+  if(pct>=90)sc.style.stroke='#2ECC71';
+  else if(pct>=70)sc.style.stroke='#F39C12';
+  else sc.style.stroke='#E94560';
+
+  // Cards
+  document.getElementById('whyWorks').innerHTML=result.why;
+  document.getElementById('skinProfile').innerHTML=`<strong>${SKIN_PROFILES[selectedTone].label} Skin:</strong> ${SKIN_PROFILES[selectedTone].desc}`;
+  document.getElementById('colorPsych').innerHTML=result.psych;
+
+  // Alternatives
+  const altList=document.getElementById('altList');
+  altList.innerHTML='';
+  result.alts.forEach(a=>{
+    altList.innerHTML+=`<div class="alt-row">
+      <div class="alt-swatch" style="background:${a.hex}"></div>
+      <div class="alt-info">
+        <div class="alt-name">${a.name}</div>
+        <div class="alt-bar-wrap"><div class="alt-bar" style="width:0%" data-w="${a.pct}%"></div></div>
+      </div>
+      <div class="alt-pct">${a.pct}%</div>
+    </div>`;
+  });
+
+  // Tips
+  const tl=document.getElementById('tipsList');
+  tl.innerHTML='';
+  result.tips.forEach(t=>{
+    tl.innerHTML+=`<div class="tip-row"><div class="tip-icon">${t.i}</div><div class="tip-content"><div class="tip-label">${t.l}</div><p>${t.t}</p></div></div>`;
+  });
+  // Add occasion tip if selected
+  if(selectedOcc){
+    const oTip=OCC_CONTEXT[selectedOcc];
+    tl.innerHTML+=`<div class="tip-row"><div class="tip-icon">📅</div><div class="tip-content"><div class="tip-label">Occasion note</div><p>${oTip.tip}</p></div></div>`;
+  }
+
+  // Outfit
+  document.getElementById('outfitText').textContent=result.outfit;
+
+  // Animate alt bars
+  setTimeout(()=>{
+    document.querySelectorAll('.alt-bar').forEach(b=>{b.style.width=b.getAttribute('data-w');});
+  },400);
+
+  // Confetti for perfect scores
+  if(pct>=98)launchConfetti();
+
+  // PAGE TRANSITION
+  document.getElementById('page1').classList.add('slide-out');
+  setTimeout(()=>{
+    document.getElementById('page2').classList.remove('hidden');
+    document.getElementById('page2').scrollTop=0;
+  },400);
+
+  // History
+  saveHistory();
+  renderHistory();
+}
+
+function showFallback(){
+  // Generic fallback if combination not in data
+  document.getElementById('resultEmoji').textContent='✨';
+  document.getElementById('resultVerdict').innerHTML=`<span>${selectedColor.label.toUpperCase()}</span> — A STYLISH CHOICE`;
+  document.getElementById('scorePct').textContent='75%';
+  const circ=document.getElementById('scoreCircle');
+  const c=2*Math.PI*42;
+  circ.setAttribute('stroke-dasharray',c);
+  setTimeout(()=>circ.setAttribute('stroke-dashoffset',c*0.25),200);
+  document.getElementById('whyWorks').textContent='This color can work beautifully with thoughtful styling — consider your undertones and occasion.';
+  document.getElementById('skinProfile').textContent=SKIN_PROFILES[selectedTone]?.desc||'Your skin tone is unique and beautiful.';
+  document.getElementById('colorPsych').textContent='This color carries its own expressive power — own it with confidence.';
+  document.getElementById('altList').innerHTML='';
+  document.getElementById('tipsList').innerHTML='<div class="tip-row"><div class="tip-icon">💡</div><div class="tip-content"><div class="tip-label">Style Tip</div><p>Experiment with different shades within this color family to find your most flattering version.</p></div></div>';
+  document.getElementById('outfitText').textContent='Try building your look from a neutral base and using this color as your hero piece — let it lead the outfit.';
+  document.getElementById('page1').classList.add('slide-out');
+  setTimeout(()=>{document.getElementById('page2').classList.remove('hidden');document.getElementById('page2').scrollTop=0;},400);
+}
+
+// ──────── CONFETTI ────────
+function launchConfetti(){
+  const colors=['#E94560','#F39C12','#2ECC71','#0F3460','#FFD700','#FF69B4'];
+  for(let i=0;i<60;i++){
+    setTimeout(()=>{
+      const c=document.createElement('div');
+      c.className='confetti-piece';
+      c.style.cssText=`left:${Math.random()*100}%;width:${Math.random()*10+5}px;height:${Math.random()*10+5}px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:${Math.random()>0.5?'50%':'2px'};animation-duration:${Math.random()*2+1.5}s;animation-delay:${Math.random()*1}s;`;
+      document.body.appendChild(c);
+      setTimeout(()=>c.remove(),4000);
+    },i*40);
+  }
+}
+
+// ──────── LOCAL STORAGE ────────
+function saveHistory(){
+  if(!currentResult)return;
+  let hist=[];
+  try{hist=JSON.parse(localStorage.getItem('chromastyle_history'))||[];}catch(e){}
+  const entry={tone:currentResult.tone,colorLabel:currentResult.color.label,colorHex:currentResult.color.hex,score:currentResult.result.score,emoji:currentResult.result.emoji,ts:Date.now()};
+  hist.unshift(entry);
+  hist=hist.slice(0,5);
+  localStorage.setItem('chromastyle_history',JSON.stringify(hist));
+}
+
+function saveProfile(){
+  saveHistory();
+  const btn=document.querySelector('.act-btn.ghost');
+  btn.textContent='✅ Profile Saved!';
+  btn.style.background='var(--green)';btn.style.color='#fff';btn.style.border='none';
+  setTimeout(()=>{btn.textContent='💾 Save My Style Profile';btn.style.background='';btn.style.color='';btn.style.border='';},2500);
+}
+
+function renderHistory(){
+  let hist=[];
+  try{hist=JSON.parse(localStorage.getItem('chromastyle_history'))||[];}catch(e){}
+  const bar=document.getElementById('historyBar');
+  const list=document.getElementById('historyList');
+  if(!hist.length){bar.style.display='none';return;}
+  bar.style.display='block';
+  list.innerHTML='';
+  hist.forEach(h=>{
+    list.innerHTML+=`<div class="hist-item">
+      <div class="hist-dot" style="background:${h.colorHex};border:1px solid rgba(0,0,0,.1)"></div>
+      <span class="hist-label">${h.emoji} ${SKIN_PROFILES[h.tone]?.label||h.tone} skin + ${h.colorLabel}</span>
+      <span class="hist-score">${h.score}%</span>
+    </div>`;
+  });
+}
+
+// ──────── SHARE ────────
+function openShare(){
+  if(!currentResult)return;
+  const r=currentResult.result;
+  const text=`✨ My ChromaStyle Result:\n${r.emoji} ${r.verdict}\nMatch Score: ${r.score}%\n\n${r.why}\n\n💡 Tip: ${r.tips[0].t}`;
+  document.getElementById('shareText').textContent=text;
+  document.getElementById('shareModal').classList.add('show');
+}
+
+function closeShare(){document.getElementById('shareModal').classList.remove('show');}
+
+function copyShare(){
+  const txt=document.getElementById('shareText').textContent;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn=event.target;
+    btn.textContent='✅ Copied!';
+    setTimeout(()=>{btn.textContent='📋 Copy to Clipboard';},2000);
+  });
+}
+
+// ──────── INIT ────────
+buildSwatches();
+buildParticles();
+renderHistory();
+
+// Close modal on overlay click
+document.getElementById('shareModal').addEventListener('click',function(e){if(e.target===this)closeShare();});
+</script>
+</body>
+</html>
